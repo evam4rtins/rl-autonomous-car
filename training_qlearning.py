@@ -94,8 +94,6 @@ plt.ylabel("Total Reward")
 plt.title("Q-learning Training")
 plt.show()
 
-# Playback trained policy with trajectory
-import matplotlib.pyplot as plt
 plt.ion()
 
 state, _ = env.reset()
