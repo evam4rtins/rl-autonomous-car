@@ -8,7 +8,7 @@ env = CarTrackEnvV0()
 n_bins_y = 15
 n_bins_psi = 15
 
-# State bounds (must match env observation space)
+# State bounds for discretization
 y_min, y_max = -2.0, 2.0
 psi_min, psi_max = -np.pi/4, np.pi/4
 
