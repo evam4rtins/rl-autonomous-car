@@ -93,3 +93,21 @@ plt.xlabel("Episode")
 plt.ylabel("Total Reward")
 plt.title("Q-learning Training")
 plt.show()
+
+# Playback trained policy with trajectory
+import matplotlib.pyplot as plt
+plt.ion()
+
+state, _ = env.reset()
+terminated = False
+truncated = False
+
+while not (terminated or truncated):
+    y_idx, psi_idx = discretize_state(state)
+    action = np.argmax(Q[y_idx, psi_idx])  # best action from Q-table
+    state, reward, terminated, truncated, _ = env.step(action)
+    env.render()  # show car + trajectory
+
+plt.ioff()
+plt.show()
+env.close()

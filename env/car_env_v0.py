@@ -1,6 +1,7 @@
 import gymnasium as gym
 from gymnasium import spaces
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 class CarTrackEnvV0(gym.Env):
@@ -16,6 +17,9 @@ class CarTrackEnvV0(gym.Env):
 
     def __init__(self, max_steps=500):
         super().__init__()
+        self.fig = None
+        self.ax = None
+
 
         self.max_steps = max_steps
         self.current_step = 0
@@ -119,4 +123,39 @@ class CarTrackEnvV0(gym.Env):
         return state, reward, terminated, truncated, info
 
     def render(self):
-        print(f"Position: {self.pos}, Heading: {self.heading:.2f}")
+        if self.fig is None:
+            self.fig, self.ax = plt.subplots()
+            plt.ion()  # interactive mode
+            self.ax.plot(self.track_x, self.track_y, 'k-', lw=2, label='Track')
+            self.ax.set_xlim(-1, 21)
+            self.ax.set_ylim(-3, 3)
+            self.ax.set_aspect('equal')
+            self.ax.set_title("Car Tracking Environment")
+            self.car_patch, = self.ax.plot([], [], 'ro', markersize=8)
+            self.heading_arrow = None
+            self.trajectory_x = []
+            self.trajectory_y = []
+
+        # Update car position
+        self.car_patch.set_data([self.pos[0]], [self.pos[1]])
+
+        # Update trajectory
+        self.trajectory_x.append(self.pos[0])
+        self.trajectory_y.append(self.pos[1])
+        self.ax.plot(self.trajectory_x, self.trajectory_y, 'r--', alpha=0.5)
+
+        # Remove old heading arrow
+        if self.heading_arrow:
+            self.heading_arrow.remove()
+
+        # Draw heading arrow
+        arrow_length = 0.5
+        dx = arrow_length * np.cos(self.heading)
+        dy = arrow_length * np.sin(self.heading)
+        self.heading_arrow = self.ax.arrow(
+            self.pos[0], self.pos[1], dx, dy,
+            head_width=0.1, head_length=0.1, fc='b', ec='b'
+        )
+
+        plt.pause(0.01)
+
