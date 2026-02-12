@@ -29,7 +29,7 @@ def main():
     # --------------------
     # Train Q-learning
     # --------------------
-    Q, rewards = q_learning(
+    Q, rewards, changes = q_learning(
         env=env,
         discretize_state=discretize_state,
         state_shape=(n_bins_y, n_bins_psi),
